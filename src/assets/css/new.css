@@ -207,6 +207,14 @@
 
 }
 
+#ani_detail .film-stats .tick-item.tick-quality,
+#ani_detail .film-stats .tick-item.tick-dub {
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    min-width: 44px;
+    text-align: center;
+}
+
 .anime-qtip {
     position: absolute;
     z-index: 9999;

@@ -56,7 +56,7 @@ $watchlistLabels = [
 
 
 $characterData = zpi_get("/character/list/" . urlencode($animeId));
-$characterDataJson = json_encode($characterData, JSON_PRETTY_PRINT);
+$characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
 
 
@@ -156,10 +156,9 @@ $characterDataJson = json_encode($characterData, JSON_PRETTY_PRINT);
                                 <div id="mal-sync"></div>
                                 <div class="film-stats">
                                     <div class="tick">
-                                    <div class="tick-item tick-pg"><?= htmlspecialchars($animeData['rating'] ?? '') ?></div>
-                                    <div class="tick-item tick-quality"><?= htmlspecialchars($animeData['quality'] ?? '') ?></div>
-                                        <div class="tick-item tick-sub"><i class="fas fa-closed-captioning mr-1"></i><?= htmlspecialchars($animeData['subEp'] ?? '') ?></div>
-                                        <div class="tick-item tick-dub"><i class="fas fa-microphone mr-1"></i><?= htmlspecialchars($animeData['dubEp'] ?? '') ?></div>
+                                    <div class="tick-item tick-quality"><?= htmlspecialchars($animeData['quality'] ?: 'HD') ?></div>
+                                    <div class="tick-item tick-sub">CC <?= htmlspecialchars($animeData['subEp'] ?? '') ?></div>
+                                    <div class="tick-item tick-dub">DUB <?= htmlspecialchars($animeData['dubEp'] ?? '') ?></div>
                                         <span class="dot"></span>
                                         <span class="item"><?= htmlspecialchars($animeData['showType']) ?></span>
                                         <span class="dot"></span>
@@ -516,7 +515,6 @@ $characterDataJson = json_encode($characterData, JSON_PRETTY_PRINT);
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="<?= htmlspecialchars($websiteUrl) ?>/src/assets/js/function.js"></script>
     <!-- Bootstrap JS and dependencies -->
-     0
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
@@ -675,7 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script>
-    const characterData = <?= $characterData ?>;
+    const characterData = <?= $characterDataJson ?: 'null' ?>;
     const allActorsFallback = <?= json_encode($animeData['actors'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -698,9 +696,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (loadingElement) loadingElement.style.display = 'block';
             characterList.innerHTML = '';
 
-            const characters = (characterData && characterData.success && characterData.results && Array.isArray(characterData.results.data))
-                ? characterData.results.data
-                : allActorsFallback;
+            const characters = getCharactersFromPayload(characterData, allActorsFallback);
 
             if (!Array.isArray(characters) || characters.length === 0) {
                 characterList.innerHTML = '<div class="text-center py-3">No character data available.</div>';
@@ -709,7 +705,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             characters.forEach(item => {
                 const character = item.character || {};
-                const voiceActors = Array.isArray(item.voiceActors) ? item.voiceActors : [];
+                const voiceActors = Array.isArray(item.voiceActors)
+                    ? item.voiceActors
+                    : (Array.isArray(item.voice_actors) ? item.voice_actors : []);
                 const characterId = character.id ?? '';
                 const characterName = character.name ?? 'Unknown';
                 const characterPoster = character.poster ?? '<?= htmlspecialchars($websiteUrl) ?>/public/images/no-avatar.jpeg';
@@ -760,6 +758,30 @@ document.addEventListener('DOMContentLoaded', function() {
         } finally {
             if (loadingElement) loadingElement.style.display = 'none';
         }
+    }
+
+    function getCharactersFromPayload(payload, fallbackActors) {
+        if (!payload) {
+            return fallbackActors;
+        }
+
+        if (Array.isArray(payload)) {
+            return payload;
+        }
+
+        if (Array.isArray(payload.data)) {
+            return payload.data;
+        }
+
+        if (payload.results && Array.isArray(payload.results.data)) {
+            return payload.results.data;
+        }
+
+        if (payload.results && Array.isArray(payload.results)) {
+            return payload.results;
+        }
+
+        return fallbackActors;
     }
 </script>
 
