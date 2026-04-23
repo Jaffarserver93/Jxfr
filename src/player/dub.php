@@ -17,6 +17,25 @@ $autoSkip = isset($_GET['skip']) && $_GET['skip'] === 'true';
 $isIframe = ($server === 'Fast' && $isPlay);
 $embd_url = "https://megaplay.buzz/stream/s-2/{$epId}/dub";
 
+$malId = trim((string) ($_GET['malId'] ?? ''));
+$anilistId = trim((string) ($_GET['anilistId'] ?? ''));
+$aniwatchId = trim((string) ($_GET['aniwatchId'] ?? ''));
+$episode = isset($_GET['ep']) ? (int) $_GET['ep'] : 1;
+$episode = $episode > 0 ? $episode : 1;
+
+if ($malId !== '' || $anilistId !== '' || $aniwatchId !== '') {
+    if ($malId !== '') {
+        $embd_url = "https://megaplay.buzz/stream/mal/" . rawurlencode($malId) . "/{$episode}/dub";
+    } elseif ($anilistId !== '') {
+        $embd_url = "https://megaplay.buzz/stream/ani/" . rawurlencode($anilistId) . "/{$episode}/dub";
+    } else {
+        $embd_url = "https://megaplay.buzz/stream/s-2/" . rawurlencode($aniwatchId) . "/dub";
+    }
+
+    echo '<iframe src="' . htmlspecialchars($embd_url, ENT_QUOTES, 'UTF-8') . '" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>';
+    exit;
+}
+
 if ($isIframe) {
     echo '<iframe src="' . $embd_url . '" width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen></iframe>';
     exit;
