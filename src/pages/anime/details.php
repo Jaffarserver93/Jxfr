@@ -137,7 +137,6 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             color: #FFFFFF;
             font-family: "Inter", "Segoe UI", Arial, sans-serif;
             height: 32px;
-            max-height: 34px;
             line-height: normal;
         }
 
@@ -146,25 +145,27 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             gap: 0;
             overflow: hidden;
             border-radius: 8px;
+            height: 100%;
         }
 
         .meta-badge {
             display: inline-flex;
+            flex: 1 1 0;
             align-items: center;
             justify-content: center;
             gap: 10px;
             height: 100%;
-            padding: 0 12px;
-            font-size: 14px;
+            min-width: 72px;
+            padding: 0 10px;
+            font-size: 13px;
             font-weight: 700;
             color: #121928;
             white-space: nowrap;
+            text-align: center;
         }
 
         .meta-badge--pink {
             background: #FF7BAC;
-            min-width: 72px;
-            justify-content: center;
         }
 
         .meta-badge--green {
@@ -198,7 +199,8 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             align-items: center;
             gap: 14px;
             height: 100%;
-            padding: 0 12px;
+            padding: 0 12px 0 16px;
+            margin-left: 2px;
             font-size: 12px;
             font-weight: 500;
             white-space: nowrap;
@@ -256,7 +258,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
                                                             <path d="M8.1 15.6c-2 0-3.3-1.6-3.3-3.6s1.3-3.6 3.3-3.6c1.2 0 2.1.5 2.7 1.4l-1 .9c-.3-.6-.9-.9-1.6-.9-1.1 0-1.9.9-1.9 2.2s.8 2.2 1.9 2.2c.7 0 1.3-.4 1.6-1l1 .8c-.6 1-1.6 1.6-2.7 1.6zM15.7 15.6c-2 0-3.3-1.6-3.3-3.6s1.3-3.6 3.3-3.6c1.2 0 2.1.5 2.7 1.4l-1 .9c-.3-.6-.9-.9-1.6-.9-1.1 0-1.9.9-1.9 2.2s.8 2.2 1.9 2.2c.7 0 1.3-.4 1.6-1l1 .8c-.6 1-1.6 1.6-2.7 1.6z" fill="#84D494"></path>
                                                         </svg>
                                                     </span>
-                                                    <span><?= htmlspecialchars($animeData['subEp'] ?? '0') ?></span>
+                                                    <span><?= htmlspecialchars(!empty($animeData['subEp']) ? $animeData['subEp'] : 'N/A') ?></span>
                                                 </div>
                                                 <div class="meta-badge meta-badge--blue">
                                                     <span class="meta-icon" aria-hidden="true">
@@ -265,7 +267,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
                                                             <path d="M18.1 11.8a1 1 0 0 0-1 1 5.1 5.1 0 1 1-10.2 0 1 1 0 1 0-2 0 7.1 7.1 0 0 0 6.1 7v1.6H8.6a1 1 0 1 0 0 2h6.8a1 1 0 1 0 0-2H13v-1.6a7.1 7.1 0 0 0 6.1-7 1 1 0 0 0-1-1z"></path>
                                                         </svg>
                                                     </span>
-                                                    <span><?= htmlspecialchars($animeData['dubEp'] ?? '0') ?></span>
+                                                    <span><?= htmlspecialchars(!empty($animeData['dubEp']) ? $animeData['dubEp'] : 'N/A') ?></span>
                                                 </div>
                                             </div>
                                             <div class="meta-details">
