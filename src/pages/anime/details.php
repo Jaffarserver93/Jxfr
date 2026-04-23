@@ -592,27 +592,46 @@ $dubEpisodes = (isset($dubEpisodesRaw) && $dubEpisodesRaw !== '' && (!is_numeric
                             <div class="film_list-wrap">
                                 <?php if (!empty($animeData['recommendedAnimes'])): ?>
                                     <?php foreach ($animeData['recommendedAnimes'] as $recommendedAnime): ?>
+                                        <?php
+                                            $recommendedType = trim((string)($recommendedAnime['type'] ?? $recommendedAnime['format'] ?? $recommendedAnime['tvInfo']['showType'] ?? ''));
+                                            $recommendedDuration = trim((string)($recommendedAnime['duration'] ?? $recommendedAnime['tvInfo']['duration'] ?? ''));
+                                            $recommendedEpisodeCount = $recommendedAnime['episodes']['sub'] ?? $recommendedAnime['episodes']['dub'] ?? $recommendedAnime['tvInfo']['eps'] ?? null;
+
+                                            if ($recommendedDuration === '' && !empty($recommendedEpisodeCount)) {
+                                                $recommendedDuration = is_numeric($recommendedEpisodeCount)
+                                                    ? ((int)$recommendedEpisodeCount . ' eps')
+                                                    : trim((string)$recommendedEpisodeCount);
+                                            }
+                                        ?>
                                         <div class="flw-item">
                                             <div class="film-poster">
                                                 <div class="tick ltr">
                                                     <?php if (!empty($recommendedAnime['episodes']['sub'])): ?>
-                                                        <div class="tick-item tick-sub"><i class="fas fa-closed-captioning mr-1"></i><?= htmlspecialchars($recommendedAnime['episodes']['sub']) ?></div>
+                                                        <div class="tick-item tick-sub"><i class="fas fa-closed-captioning mr-1"></i><?= htmlspecialchars($recommendedAnime['episodes']['sub'] ?? '') ?></div>
                                                     <?php endif; ?>
                                                     <?php if (!empty($recommendedAnime['episodes']['dub'])): ?>
-                                                        <div class="tick-item tick-dub"><i class="fas fa-microphone mr-1"></i><?= htmlspecialchars($recommendedAnime['episodes']['dub']) ?></div>
+                                                        <div class="tick-item tick-dub"><i class="fas fa-microphone mr-1"></i><?= htmlspecialchars($recommendedAnime['episodes']['dub'] ?? '') ?></div>
                                                     <?php endif; ?>
-                                                    <div class="tick-item tick-eps"><?= htmlspecialchars($recommendedAnime['episodes']['sub'] ?? $recommendedAnime['episodes']['dub']) ?></div>
+                                                    <div class="tick-item tick-eps"><?= htmlspecialchars(($recommendedAnime['episodes']['sub'] ?? $recommendedAnime['episodes']['dub'] ?? '')) ?></div>
                                                 </div>
-                                                <img data-src="<?= htmlspecialchars($recommendedAnime['poster']) ?>" class="film-poster-img lazyloaded" alt="<?= htmlspecialchars($recommendedAnime['name'] ?? $recommendedAnime['jname']) ?>" src="<?= htmlspecialchars($recommendedAnime['poster']) ?>">
-                                                <a href="/details/<?= htmlspecialchars($recommendedAnime['id']) ?>" class="film-poster-ahref item-qtip" data-id="<?= htmlspecialchars($recommendedAnime['id']) ?>" data-hasqtip="0" oldtitle="<?= htmlspecialchars($recommendedAnime['name'] ?? $recommendedAnime['jname']) ?>" title="" aria-describedby="qtip-0"><i class="fas fa-play"></i></a>
+                                                <img data-src="<?= htmlspecialchars($recommendedAnime['poster'] ?? '') ?>" class="film-poster-img lazyloaded" alt="<?= htmlspecialchars(($recommendedAnime['name'] ?? $recommendedAnime['jname'] ?? '')) ?>" src="<?= htmlspecialchars($recommendedAnime['poster'] ?? '') ?>">
+                                                <a href="/details/<?= htmlspecialchars($recommendedAnime['id'] ?? '') ?>" class="film-poster-ahref item-qtip" data-id="<?= htmlspecialchars($recommendedAnime['id'] ?? '') ?>" data-hasqtip="0" oldtitle="<?= htmlspecialchars(($recommendedAnime['name'] ?? $recommendedAnime['jname'] ?? '')) ?>" title="" aria-describedby="qtip-0"><i class="fas fa-play"></i></a>
                                             </div>
                                             <div class="film-detail">
-                                                <h3 class="film-name"><a href="/details/<?= htmlspecialchars($recommendedAnime['id']) ?>" title="<?= htmlspecialchars($recommendedAnime['name'] ?? $recommendedAnime['jname']) ?>"><?= htmlspecialchars($recommendedAnime['name'] ?? $recommendedAnime['jname']) ?></a></h3>
-                                                <div class="fd-infor">
-                                                    <span class="fdi-item"><?= htmlspecialchars($recommendedAnime['type']) ?></span>
-                                                    <span class="dot"></span>
-                                                    <span class="fdi-item fdi-duration"><?= htmlspecialchars($recommendedAnime['duration']) ?></span>
-                                                </div>
+                                                <h3 class="film-name"><a href="/details/<?= htmlspecialchars($recommendedAnime['id'] ?? '') ?>" title="<?= htmlspecialchars(($recommendedAnime['name'] ?? $recommendedAnime['jname'] ?? '')) ?>"><?= htmlspecialchars(($recommendedAnime['name'] ?? $recommendedAnime['jname'] ?? '')) ?></a></h3>
+                                                <?php if ($recommendedType !== '' || $recommendedDuration !== ''): ?>
+                                                    <div class="fd-infor">
+                                                        <?php if ($recommendedType !== ''): ?>
+                                                            <span class="fdi-item"><?= htmlspecialchars($recommendedType ?? '') ?></span>
+                                                        <?php endif; ?>
+                                                        <?php if ($recommendedType !== '' && $recommendedDuration !== ''): ?>
+                                                            <span class="dot"></span>
+                                                        <?php endif; ?>
+                                                        <?php if ($recommendedDuration !== ''): ?>
+                                                            <span class="fdi-item fdi-duration"><?= htmlspecialchars($recommendedDuration ?? '') ?></span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                             <div class="clearfix"></div>
                                         </div>
