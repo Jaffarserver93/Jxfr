@@ -156,10 +156,10 @@ $characterDataJson = json_encode($characterData, JSON_PRETTY_PRINT);
                                 <div id="mal-sync"></div>
                                 <div class="film-stats">
                                     <div class="tick">
-                                    <div class="tick-item tick-pg"><?= htmlspecialchars($animeData['rating']) ?></div>
-                                    <div class="tick-item tick-quality"><?= htmlspecialchars($animeData['quality']) ?></div>
-                                        <div class="tick-item tick-sub"><i class="fas fa-closed-captioning mr-1"></i><?= htmlspecialchars($animeData['subEp']) ?></div>
-                                        <div class="tick-item tick-dub"><i class="fas fa-microphone mr-1"></i><?= htmlspecialchars($animeData['dubEp']) ?></div>
+                                    <div class="tick-item tick-pg"><?= htmlspecialchars($animeData['rating'] ?? '') ?></div>
+                                    <div class="tick-item tick-quality"><?= htmlspecialchars($animeData['quality'] ?? '') ?></div>
+                                        <div class="tick-item tick-sub"><i class="fas fa-closed-captioning mr-1"></i><?= htmlspecialchars($animeData['subEp'] ?? '') ?></div>
+                                        <div class="tick-item tick-dub"><i class="fas fa-microphone mr-1"></i><?= htmlspecialchars($animeData['dubEp'] ?? '') ?></div>
                                         <span class="dot"></span>
                                         <span class="item"><?= htmlspecialchars($animeData['showType']) ?></span>
                                         <span class="dot"></span>
@@ -357,7 +357,7 @@ $characterDataJson = json_encode($characterData, JSON_PRETTY_PRINT);
                     </div>
                     <div class="block-actors-content">
                         <div class="bac-list-wrap">
-                            <?php foreach ($animeData['actors'] as $entry): ?>
+                            <?php foreach (array_slice($animeData['actors'], 0, 10) as $entry): ?>
                                 <div class="bac-item">
                                     <div class="per-info ltr">
                                         <a href="/character/<?= htmlspecialchars($entry['character']['id']) ?>" class="pi-avatar" rel="noopener noreferrer">
@@ -676,114 +676,90 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
     const characterData = <?= $characterData ?>;
-    const ITEMS_PER_PAGE = 6;
+    const allActorsFallback = <?= json_encode($animeData['actors'] ?? [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelector('[data-target="#modalVoiceActors"]').addEventListener('click', function() {
-            displayCharacters(1);
+        const viewMoreTrigger = document.querySelector('[data-target="#modalVoiceActors"]');
+        if (!viewMoreTrigger) return;
+
+        viewMoreTrigger.addEventListener('click', function() {
+            displayCharacters();
         });
     });
 
-    function displayCharacters(page) {
+    function displayCharacters() {
         const loadingElement = document.querySelector('.loading-relative');
         const characterList = document.getElementById('character-list');
-        
+        const paginationElement = document.querySelector('.pagination');
+
+        if (!characterList) return;
+
         try {
-            loadingElement.style.display = 'block';
+            if (loadingElement) loadingElement.style.display = 'block';
             characterList.innerHTML = '';
 
-            if (characterData && characterData.success && characterData.results.data) {
-                const characters = characterData.results.data;
-                const totalPages = Math.ceil(characters.length / ITEMS_PER_PAGE);
-                const startIndex = (page - 1) * ITEMS_PER_PAGE;
-                const endIndex = startIndex + ITEMS_PER_PAGE;
-                const pageCharacters = characters.slice(startIndex, endIndex);
+            const characters = (characterData && characterData.success && characterData.results && Array.isArray(characterData.results.data))
+                ? characterData.results.data
+                : allActorsFallback;
 
-                pageCharacters.forEach(item => {
-                    const characterItem = document.createElement('div');
-                    characterItem.className = 'bac-item';
-
-                    // Create character info
-                    const characterHtml = `
-                        <div class="per-info ltr">
-                            <a href="/character/${item.character.id}" class="pi-avatar">
-                                <img class="lazyload" src="${item.character.poster}" alt="${item.character.name}">
-                            </a>
-                            <div class="pi-detail">
-                                <h4 class="pi-name">
-                                    <a href="/character/${item.character.id}">${item.character.name}</a>
-                                </h4>
-                                <span class="pi-cast">${item.character.cast}</span>
-                            </div>
-                        </div>
-                    `;
-
-                    // Create voice actors info with tooltip
-                    const voiceActorsHtml = `
-                        <div class="per-info per-info-xx">
-                            <div class="pix-list">
-                                ${item.voiceActors.map(actor => `
-                                    <a href="/actors/${actor.id}" data-toggle="tooltip" title="${actor.name}" class="pi-avatar">
-                                        <img class="lazyload" src="${actor.poster}" alt="${actor.name}">
-                                    </a>
-                                `).join('')}
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                    `;
-
-                    characterItem.innerHTML = characterHtml + voiceActorsHtml;
-                    characterList.appendChild(characterItem);
-                });
-
-                // Update pagination
-                updatePagination(page, totalPages);
-                
-                // Initialize tooltips
-                $('[data-toggle="tooltip"]').tooltip();
-
-            } else {
-                console.error('Invalid character data structure');
+            if (!Array.isArray(characters) || characters.length === 0) {
+                characterList.innerHTML = '<div class="text-center py-3">No character data available.</div>';
+                return;
             }
+
+            characters.forEach(item => {
+                const character = item.character || {};
+                const voiceActors = Array.isArray(item.voiceActors) ? item.voiceActors : [];
+                const characterId = character.id ?? '';
+                const characterName = character.name ?? 'Unknown';
+                const characterPoster = character.poster ?? '<?= htmlspecialchars($websiteUrl) ?>/public/images/no-avatar.jpeg';
+                const characterCast = character.cast ?? '';
+
+                const characterItem = document.createElement('div');
+                characterItem.className = 'bac-item';
+
+                const characterHtml = `
+                    <div class="per-info ltr">
+                        <a href="/character/${characterId}" class="pi-avatar">
+                            <img class="lazyload" src="${characterPoster}" alt="${characterName}">
+                        </a>
+                        <div class="pi-detail">
+                            <h4 class="pi-name">
+                                <a href="/character/${characterId}">${characterName}</a>
+                            </h4>
+                            <span class="pi-cast">${characterCast}</span>
+                        </div>
+                    </div>
+                `;
+
+                const voiceActorsHtml = voiceActors.length > 0 ? `
+                    <div class="per-info per-info-xx">
+                        <div class="pix-list">
+                            ${voiceActors.map(actor => `
+                                <a href="/actors/${actor.id ?? ''}" data-toggle="tooltip" title="${actor.name ?? ''}" class="pi-avatar">
+                                    <img class="lazyload" src="${actor.poster ?? '<?= htmlspecialchars($websiteUrl) ?>/public/images/no-avatar.jpeg'}" alt="${actor.name ?? ''}">
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                ` : '<div class="clearfix"></div>';
+
+                characterItem.innerHTML = characterHtml + voiceActorsHtml;
+                characterList.appendChild(characterItem);
+            });
+
+            // All characters are shown at once in the modal.
+            if (paginationElement) {
+                paginationElement.innerHTML = '';
+            }
+
+            $('[data-toggle="tooltip"]').tooltip();
         } catch (error) {
             console.error('Error displaying characters:', error);
         } finally {
-            loadingElement.style.display = 'none';
+            if (loadingElement) loadingElement.style.display = 'none';
         }
-    }
-
-    function updatePagination(currentPage, totalPages) {
-        const paginationElement = document.querySelector('.pagination');
-        let paginationHtml = '';
-
-        // Previous button
-        if (currentPage > 1) {
-            paginationHtml += `
-                <li class="page-item">
-                    <a href="javascript:;" class="page-link" onclick="displayCharacters(${currentPage - 1})">‹</a>
-                </li>
-            `;
-        }
-
-        // Page numbers
-        for (let i = 1; i <= totalPages; i++) {
-            paginationHtml += `
-                <li class="page-item ${i === currentPage ? 'active' : ''}">
-                    <a href="javascript:;" class="page-link" onclick="displayCharacters(${i})">${i}</a>
-                </li>
-            `;
-        }
-
-        // Next button
-        if (currentPage < totalPages) {
-            paginationHtml += `
-                <li class="page-item">
-                    <a href="javascript:;" class="page-link" onclick="displayCharacters(${currentPage + 1})">›</a>
-                </li>
-            `;
-        }
-
-        paginationElement.innerHTML = paginationHtml;
     }
 </script>
 

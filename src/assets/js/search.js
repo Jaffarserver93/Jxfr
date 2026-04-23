@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const searchInput = document.querySelector('.search-input');
+    const searchInput = document.querySelector('#search .search-input') || document.querySelector('.search-input');
     const searchSuggest = document.getElementById('search-suggest');
     const searchLoading = document.getElementById('search-loading');
     
