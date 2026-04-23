@@ -58,6 +58,11 @@ $watchlistLabels = [
 $characterData = zpi_get("/character/list/" . urlencode($animeId));
 $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
+$subEpisodes = isset($animeData['subEp']) && $animeData['subEp'] !== '' ? $animeData['subEp'] : 'N/A';
+$dubEpisodesRaw = $animeData['dubEp'] ?? null;
+$dubEpisodes = ($dubEpisodesRaw === null || $dubEpisodesRaw === '' || (is_numeric($dubEpisodesRaw) && (int)$dubEpisodesRaw === 0))
+    ? 'N/A'
+    : $dubEpisodesRaw;
 
 
 ?>
@@ -131,6 +136,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
         .meta-unified-bar {
             display: inline-flex;
             align-items: center;
+            flex-wrap: nowrap;
             background: #2C313B;
             border-radius: 8px;
             overflow: hidden;
@@ -150,13 +156,12 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
 
         .meta-badge {
             display: inline-flex;
-            flex: 1 1 0;
+            flex: 0 0 auto;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 4px;
             height: 100%;
-            min-width: 72px;
-            padding: 0 10px;
+            padding: 0 8px;
             font-size: 13px;
             font-weight: 700;
             color: #121928;
@@ -174,6 +179,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
 
         .meta-badge--blue {
             background: #72C7FF;
+            flex-shrink: 0;
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
         }
@@ -211,6 +217,13 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             color: #8D93A1;
             font-size: 12px;
             line-height: normal;
+            margin: 0 5px;
+        }
+
+        @media (max-width: 767px) {
+            .meta-badge {
+                font-size: 11px;
+            }
         }
     </style>
 </head>
@@ -258,7 +271,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
                                                             <path d="M8.1 15.6c-2 0-3.3-1.6-3.3-3.6s1.3-3.6 3.3-3.6c1.2 0 2.1.5 2.7 1.4l-1 .9c-.3-.6-.9-.9-1.6-.9-1.1 0-1.9.9-1.9 2.2s.8 2.2 1.9 2.2c.7 0 1.3-.4 1.6-1l1 .8c-.6 1-1.6 1.6-2.7 1.6zM15.7 15.6c-2 0-3.3-1.6-3.3-3.6s1.3-3.6 3.3-3.6c1.2 0 2.1.5 2.7 1.4l-1 .9c-.3-.6-.9-.9-1.6-.9-1.1 0-1.9.9-1.9 2.2s.8 2.2 1.9 2.2c.7 0 1.3-.4 1.6-1l1 .8c-.6 1-1.6 1.6-2.7 1.6z" fill="#84D494"></path>
                                                         </svg>
                                                     </span>
-                                                    <span><?= htmlspecialchars(!empty($animeData['subEp']) ? $animeData['subEp'] : 'N/A') ?></span>
+                                                    <span><?= htmlspecialchars($subEpisodes) ?></span>
                                                 </div>
                                                 <div class="meta-badge meta-badge--blue">
                                                     <span class="meta-icon" aria-hidden="true">
@@ -267,7 +280,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
                                                             <path d="M18.1 11.8a1 1 0 0 0-1 1 5.1 5.1 0 1 1-10.2 0 1 1 0 1 0-2 0 7.1 7.1 0 0 0 6.1 7v1.6H8.6a1 1 0 1 0 0 2h6.8a1 1 0 1 0 0-2H13v-1.6a7.1 7.1 0 0 0 6.1-7 1 1 0 0 0-1-1z"></path>
                                                         </svg>
                                                     </span>
-                                                    <span><?= htmlspecialchars(!empty($animeData['dubEp']) ? $animeData['dubEp'] : 'N/A') ?></span>
+                                                    <span><?= htmlspecialchars($dubEpisodes) ?></span>
                                                 </div>
                                             </div>
                                             <div class="meta-details">
