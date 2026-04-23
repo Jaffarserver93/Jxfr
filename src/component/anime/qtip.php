@@ -107,6 +107,19 @@ function fetchAnimeData($animeId) {
             ];
         }
 
+
+        $subEp = $tvInfo['sub'] ?? $tvInfo['eps'] ?? null;
+        $dubEp = $tvInfo['dub'] ?? null;
+
+        if ($subEp === null || $subEp === '' || (is_numeric($subEp) && (int)$subEp <= 0)) {
+            $episodesResponse = zpi_get('/episodes/' . urlencode((string)$animeId));
+            $episodesDecoded = json_decode($episodesResponse, true);
+            $episodesTotal = $episodesDecoded['results']['totalEpisodes'] ?? 0;
+            if (is_numeric($episodesTotal) && (int)$episodesTotal > 0) {
+                $subEp = (int)$episodesTotal;
+            }
+        }
+
         return [
             'poster' => $data['poster'] ?? 'default_poster.jpg',
             'id' => $data['id'] ?? null,
@@ -119,8 +132,8 @@ function fetchAnimeData($animeId) {
             'overview' => $animeInfo['Overview'] ?? 'No description',
             'showType' => $tvInfo['showType'] ?? null,
             'rating' => $tvInfo['rating'] ?? null,
-            'subEp' => $tvInfo['sub'] ?? $tvInfo['eps'] ?? 0,
-            'dubEp' => $tvInfo['dub'] ?? 0,
+            'subEp' => $subEp,
+            'dubEp' => $dubEp,
             'aired' => $animeInfo['Aired'] ?? null,
             'premiered' => $animeInfo['Premiered'] ?? null,
             'malscore' => $animeInfo['MAL Score'] ?? null,

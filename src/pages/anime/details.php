@@ -58,11 +58,15 @@ $watchlistLabels = [
 $characterData = zpi_get("/character/list/" . urlencode($animeId));
 $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-$subEpisodes = isset($animeData['subEp']) && $animeData['subEp'] !== '' ? $animeData['subEp'] : 'N/A';
+$subEpisodesRaw = $animeData['subEp'] ?? null;
+$subEpisodes = (isset($subEpisodesRaw) && $subEpisodesRaw !== '' && (!is_numeric($subEpisodesRaw) || (int)$subEpisodesRaw > 0))
+    ? $subEpisodesRaw
+    : '?';
+
 $dubEpisodesRaw = $animeData['dubEp'] ?? null;
-$dubEpisodes = ($dubEpisodesRaw === null || $dubEpisodesRaw === '' || (is_numeric($dubEpisodesRaw) && (int)$dubEpisodesRaw === 0))
-    ? 'N/A'
-    : $dubEpisodesRaw;
+$dubEpisodes = (isset($dubEpisodesRaw) && $dubEpisodesRaw !== '' && (!is_numeric($dubEpisodesRaw) || (int)$dubEpisodesRaw > 0))
+    ? $dubEpisodesRaw
+    : 'TBA';
 
 
 ?>
