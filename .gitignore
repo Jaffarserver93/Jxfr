@@ -1,0 +1,13 @@
+# Ignore the configuration file
+_config.php
+
+# Other ignore patterns
+*.log
+*.tmp
+/vendor/
+/node_modules/
+/.DS_Store
+/.env
+/_config.php
+/.vscode/sftp.json
+_config.php

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You’re Offline</title>
+  <link rel="icon" href="/public/logo/favicon.ico" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f0f0f;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .anime-art {
+      width: 200px;
+      animation: float 3s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #e50914;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #c20811;
+    }
+
+    .status {
+      font-size: 0.9rem;
+      opacity: 0.6;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <img class="anime-art" src="/public/logo/logo.png" alt="Offline Anime Mascot" />
+  <h1>You’re Offline</h1>
+  <p>Looks like you've lost connection.<br />We’ll bring you back as soon as you're online.</p>
+
+  <button onclick="location.reload()">🔄 Retry</button>
+
+  <div class="status" id="status">Waiting for network...</div>
+
+  <script>
+    // Auto redirect when back online
+    window.addEventListener('online', () => {
+      document.getElementById('status').textContent = "You're back online! Redirecting...";
+      setTimeout(() => {
+        location.reload(); // or redirect to home page
+      }, 1500);
+    });
+
+    // Optional: tell user when still offline
+    window.addEventListener('offline', () => {
+      document.getElementById('status').textContent = "Still offline...";
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+label {
+    font-size: 16px;
+    color: #a0eec0; /* Tinted green text */
+    margin-bottom: 10px;
+}
+
+input[type="file"] {
+    padding: 5px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#imagePreview {
+    margin-top: 15px;
+    max-width: 200px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    display: none;
+}
+
+button[type="submit"] {
+    background-color: #53FF87;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.film_list-wrap {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0px;
+}
+
+.flw-item {
+    width: 100%;
+    max-width: 185px;
+}
+.block_area-content.block_area-list.film_list.film_list-grid::before {
+    content: none; /* Remove the pseudo-element */
+}
+
+.block_area-content.block_area-list.film_list.film_list-grid {
+    padding: 0; /* Remove or adjust padding */
+}

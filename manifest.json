@@ -1,0 +1,55 @@
+{
+    "short_name": "AniPca",
+    "name": "AniPaca",
+    "description": "<?=$websiteDescription?>",
+    "icons": [
+        {
+            "src": "/public/logo/touch-icon-192x192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/public/logo/favicon-32x32.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/public/logo/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "start_url": "/home?source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "display_override": ["window-controls-overlay"],
+    "orientation": "any",
+    "background_color": "#202125",
+    "theme_color": "#202125",
+    "prefer_related_applications": false,
+    "categories": ["utilities"],
+    "shortcuts": [
+        {
+            "name": "Home",
+            "url": "/home",
+            "icons": [
+                {
+                    "src": "/public/logo/favicon-32x32.png",
+                    "sizes": "32x32"
+                }
+            ]
+        }
+    ],
+    "lang": "en",
+    "dir": "ltr",
+    "id": "/?source=pwa",
+    "launch_handler": {
+        "client_mode": ["navigate-existing", "auto"]
+    },
+    "edge_side_panel": {
+        "preferred_width": 400
+    }
+}

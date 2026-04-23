@@ -1,0 +1,72 @@
+.search-result-pop {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1a1b1f;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    color: #fff;
+    padding: 8px;
+  }
+  
+  .search-result-pop .nav-item {
+    display: flex;
+    padding: 8px;
+    gap: 12px;
+    align-items: center; /* Centers thumbnail and text vertically */
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.2s;
+    border-radius: 4px;
+  }
+  
+  .search-result-pop .nav-item:hover {
+    background: #2a2b30;
+  }
+  
+  .search-result-pop .thumbnail {
+    width: 50px; /* Ensure consistent size */
+    height: 65px; /* Added height for consistency */
+    flex-shrink: 0;
+    display: flex; /* Ensures image stays centered */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search-result-pop .thumbnail img {
+    width: 100%;
+    height: 100%; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensures consistent cropping */
+    border-radius: 4px;
+  }
+  
+  .search-result-pop .info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Aligns text vertically */
+    gap: 4px;
+  }
+  
+  .search-result-pop .title {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.2;
+    margin: 0;
+  }
+  
+  .search-result-pop .meta {
+    font-size: 12px;
+    color: #9ca3af;
+    line-height: 1.2;
+  }
+  
+  .no-results {
+    padding: 15px;
+    text-align: center;
+    color: #9ca3af;
+  }

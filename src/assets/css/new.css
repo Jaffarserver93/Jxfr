@@ -1,0 +1,280 @@
+.ssl-item.watched {
+    opacity: 0.8; 
+     background: #4f553c !important; 
+      }
+
+.ssl-item.watched::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #4CAF50; /* Green checkmark */
+  font-size: 12px;
+}
+
+/* Keep active episode fully visible even if watched */
+.ssl-item.active, 
+.ssl-item.watched.active {
+  opacity: 1;
+  background-color: var(--color-primary);
+}
+
+/* Add this CSS to your existing styles */
+.pc-toggle .tb-result {
+    display: inline-block; /* Ensure the result is inline */
+    margin-left: 5px; /* Add some space between the label and the result */
+    font-weight: bold; /* Make the text bold for better visibility */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.pc-toggle .tb-result span {
+    margin-left: 5px; /* Add space between On/Off states */
+}
+
+.tick-age {
+    background-color: #FF5700;
+    /* Red color */
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+
+    top: 0;
+    left: 0;
+}
+
+.dropdown-menu {
+   background: rgba(206, 211, 205, 0.568);
+   backdrop-filter: blur(8px);
+   border: 1px solid rgba(255, 255, 255, 0.1);
+   min-width: 160px;
+   padding: 8px 0;
+   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+   border-radius: 8px;
+   
+}
+
+.dropdown-menu .dropdown-item {
+   color: rgba(0, 0, 0, 0.9);
+   padding: 8px 15px;
+   font-size: 14px;
+   transition: all 0.2s ease;
+}
+
+.dropdown-menu .dropdown-item:hover {
+   background: rgba(56, 56, 56, 0.5);
+   color: #ffbade;
+}
+
+.dropdown-menu-model {
+   margin-top: 5px;
+}
+
+.dropdown-menu.show {
+   display: block;
+   position: absolute;
+   transform: translate3d(0px, 38px, 0px);
+   top: 0px;
+   left: 0px;
+   will-change: transform;
+   z-index: 1000;
+   animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translate3d(0px, 30px, 0px);
+   }
+   to {
+      opacity: 1;
+      transform: translate3d(0px, 38px, 0px);
+   }
+}
+
+
+
+
+
+.episode-container {
+    width: 100%;
+    padding: 5px;
+    background-color: #1e1e24;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.filter {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+#episode-range {
+
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2c2c34;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+#episode-range:hover {
+    background-color: #3b3b44;
+    color: #fff;
+    border-color: #67686f;
+}
+
+.episodes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 12px;
+}
+
+.episode-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    background-color: #35373d;
+    color: #9ca3af;
+}
+
+.episode-item:hover {
+    background-color: #67686f;
+    color: #fff;
+}
+
+
+.episode-item.filler-highlight {
+    color: #d1d5db;
+    background: #35373d;
+    background-image: linear-gradient(to right, #5a4944, #645a4b);
+    transition: all 0.3s ease-in-out;
+}
+
+.episode-item.filler-highlight:hover {
+    background: #9a6700;
+    color: #fff;
+}
+
+.episode-item.active {
+    background: #ff007f;
+    color: #fff;
+    font-weight: 600;
+}
+
+.episodes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    gap: 8px;
+}
+
+.tick-age {
+    background-color: #FF5700;
+    /* Red color */
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.tick-item.tick-sub {
+    background: #b0e3af;
+    /* Blue color for sub */
+    font-weight: 600;
+    color: #111 !important;
+
+}
+
+.tick-item.tick-dub {
+    background: #B9E7FF;
+    /* Yellow color for dub */
+    font-weight: 600;
+    color: #111 !important;
+
+}
+
+.anime-qtip {
+    position: absolute;
+    z-index: 9999;
+    width: 300px;
+    background: #2b2b2b;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    padding: 15px;
+}
+
+.qtip-content {
+    color: #fff;
+}
+
+.qtip-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.qtip-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rating {
+    color: #ffd700;
+}
+
+.quality-info {
+    display: flex;
+    gap: 5px;
+}
+
+.qtip-description {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+.qtip-meta > div {
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+.qtip-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-watch {
+    flex: 1;
+    background: #7676ff;
+    color: white;
+    padding: 8px;
+    text-align: center;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.btn-add {
+    width: 40px;
+    background: #3a3a3a;
+    border: none;
+    border-radius: 4px;
+    color: white;
+}
