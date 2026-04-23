@@ -56,31 +56,26 @@ if (!isset($_SESSION['viewed_pages'])) {
     $_SESSION['viewed_pages'] = [];
 }
 $counter = 0;
-if (!in_array($pageID, $_SESSION['viewed_pages'])) {
+$rows = [];
+$dbReady = isset($conn) && $conn instanceof mysqli && empty($conn->connect_error);
+
+if ($dbReady && !in_array($pageID, $_SESSION['viewed_pages'])) {
     $query = mysqli_query($conn, "SELECT * FROM `pageview` WHERE pageID = '$pageID'");
-    if (!$query) {
-        echo "Database query failed: " . mysqli_error($conn);
-        exit;
-    }
-    $rows = mysqli_fetch_array($query);
-    $counter = $rows['totalview'] ?? 0;
-    $id = $rows['id'] ?? null;
-    if ($counter === 0) {
-        $counter = 1;
-        $insertQuery = mysqli_query($conn, "INSERT INTO `pageview` (pageID, totalview, like_count, dislike_count, animeID) VALUES('$pageID', '$counter', '1', '0', '$animeId')");
-        if (!$insertQuery) {
-            echo "Failed to insert pageview count: " . mysqli_error($conn);
-            exit;
+    if ($query) {
+        $rows = mysqli_fetch_array($query) ?: [];
+        $counter = $rows['totalview'] ?? 0;
+        $id = $rows['id'] ?? null;
+        if ($counter === 0) {
+            $counter = 1;
+            mysqli_query($conn, "INSERT INTO `pageview` (pageID, totalview, like_count, dislike_count, animeID) VALUES('$pageID', '$counter', '1', '0', '$animeId')");
+        } else {
+            $counter++;
+            mysqli_query($conn, "UPDATE `pageview` SET totalview = '$counter' WHERE pageID = '$pageID'");
         }
+        $_SESSION['viewed_pages'][] = $pageID;
     } else {
-        $counter++;
-        $updateQuery = mysqli_query($conn, "UPDATE `pageview` SET totalview = '$counter' WHERE pageID = '$pageID'");
-        if (!$updateQuery) {
-            echo "Failed to update pageview count: " . mysqli_error($conn);
-            exit;
-        }
+        error_log("Pageview query failed on watch page: " . mysqli_error($conn));
     }
-    $_SESSION['viewed_pages'][] = $pageID;
 }
 
 $like_count = $rows['like_count'] ?? 0;
