@@ -121,6 +121,91 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
     <link rel=stylesheet href=https://use.fontawesome.com/releases/v5.3.1/css/all.css>
     <link rel=stylesheet href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=67521dcc10699f0019237fbb&product=inline-share-buttons&source=platform" async="async"></script>
+    <style>
+        .meta-unified-wrap {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .meta-unified-bar {
+            display: inline-flex;
+            align-items: center;
+            background: #2C313B;
+            border-radius: 8px;
+            overflow: hidden;
+            color: #FFFFFF;
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            line-height: 1;
+        }
+
+        .meta-badges {
+            display: flex;
+            gap: 0;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .meta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #121928;
+            white-space: nowrap;
+        }
+
+        .meta-badge--pink {
+            background: #FF7BAC;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .meta-badge--green {
+            background: #84D494;
+        }
+
+        .meta-badge--blue {
+            background: #72C7FF;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .meta-icon {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #121928;
+        }
+
+        .meta-icon svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            fill: currentColor;
+        }
+
+        .meta-details {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 26px;
+            min-height: 48px;
+            font-size: 22px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .meta-details__dot {
+            color: #8D93A1;
+            font-size: 28px;
+            line-height: 0.8;
+        }
+    </style>
 </head>
 
 <body data-page="movie_info">
@@ -155,15 +240,36 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
                                 <h2 class="film-name dynamic-name" data-jname="<?= htmlspecialchars($animeData['japanese'] ?? $animeData['title']) ?>"><?= htmlspecialchars($animeData['title'] ?? $animeData['japanese']) ?></h2>
                                 <div id="mal-sync"></div>
                                 <div class="film-stats">
-                                    <div class="tick">
-                                    <div class="tick-item tick-quality"><?= htmlspecialchars($animeData['quality'] ?: 'HD') ?></div>
-                                    <div class="tick-item tick-sub">CC <?= htmlspecialchars($animeData['subEp'] ?? '') ?></div>
-                                    <div class="tick-item tick-dub">DUB <?= htmlspecialchars($animeData['dubEp'] ?? '') ?></div>
-                                        <span class="dot"></span>
-                                        <span class="item"><?= htmlspecialchars($animeData['showType']) ?></span>
-                                        <span class="dot"></span>
-                                        <span class="item"><?= htmlspecialchars($animeData['duration']) ?></span>
-                                        <div class="clearfix"></div>
+                                    <div class="meta-unified-wrap">
+                                        <div class="meta-unified-bar">
+                                            <div class="meta-badges">
+                                                <div class="meta-badge meta-badge--pink"><?= htmlspecialchars($animeData['quality'] ?: 'HD') ?></div>
+                                                <div class="meta-badge meta-badge--green">
+                                                    <span class="meta-icon" aria-hidden="true">
+                                                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                                                            <rect x="1" y="3" width="22" height="18" rx="3"></rect>
+                                                            <path d="M8.1 15.6c-2 0-3.3-1.6-3.3-3.6s1.3-3.6 3.3-3.6c1.2 0 2.1.5 2.7 1.4l-1 .9c-.3-.6-.9-.9-1.6-.9-1.1 0-1.9.9-1.9 2.2s.8 2.2 1.9 2.2c.7 0 1.3-.4 1.6-1l1 .8c-.6 1-1.6 1.6-2.7 1.6zM15.7 15.6c-2 0-3.3-1.6-3.3-3.6s1.3-3.6 3.3-3.6c1.2 0 2.1.5 2.7 1.4l-1 .9c-.3-.6-.9-.9-1.6-.9-1.1 0-1.9.9-1.9 2.2s.8 2.2 1.9 2.2c.7 0 1.3-.4 1.6-1l1 .8c-.6 1-1.6 1.6-2.7 1.6z" fill="#84D494"></path>
+                                                        </svg>
+                                                    </span>
+                                                    <span><?= htmlspecialchars($animeData['subEp'] ?? '0') ?></span>
+                                                </div>
+                                                <div class="meta-badge meta-badge--blue">
+                                                    <span class="meta-icon" aria-hidden="true">
+                                                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                                                            <path d="M12 15.8a3.7 3.7 0 0 0 3.7-3.7V6.7A3.7 3.7 0 0 0 12 3a3.7 3.7 0 0 0-3.7 3.7v5.4a3.7 3.7 0 0 0 3.7 3.7z"></path>
+                                                            <path d="M18.1 11.8a1 1 0 0 0-1 1 5.1 5.1 0 1 1-10.2 0 1 1 0 1 0-2 0 7.1 7.1 0 0 0 6.1 7v1.6H8.6a1 1 0 1 0 0 2h6.8a1 1 0 1 0 0-2H13v-1.6a7.1 7.1 0 0 0 6.1-7 1 1 0 0 0-1-1z"></path>
+                                                        </svg>
+                                                    </span>
+                                                    <span><?= htmlspecialchars($animeData['dubEp'] ?? '0') ?></span>
+                                                </div>
+                                            </div>
+                                            <div class="meta-details">
+                                                <span class="meta-details__dot">&bull;</span>
+                                                <span><?= htmlspecialchars($animeData['showType']) ?></span>
+                                                <span class="meta-details__dot">&bull;</span>
+                                                <span><?= htmlspecialchars($animeData['duration']) ?></span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="film-buttons">
