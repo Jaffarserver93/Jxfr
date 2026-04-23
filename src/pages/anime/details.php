@@ -121,6 +121,40 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
     <link rel=stylesheet href=https://use.fontawesome.com/releases/v5.3.1/css/all.css>
     <link rel=stylesheet href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=67521dcc10699f0019237fbb&product=inline-share-buttons&source=platform" async="async"></script>
+    <style>
+        .quality-badge-wrap {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .quality-badge {
+            display: inline-flex;
+            border-radius: 12px;
+            overflow: hidden;
+            gap: 0;
+            line-height: 1;
+            font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+        }
+
+        .quality-badge-segment {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1f1f1f;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .quality-badge-segment--hd { background: #F8BBD0; }
+        .quality-badge-segment--cc { background: #C8E6C9; }
+        .quality-badge-segment--dub { background: #BBDEFB; }
+    </style>
 </head>
 
 <body data-page="movie_info">
@@ -156,9 +190,13 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
                                 <div id="mal-sync"></div>
                                 <div class="film-stats">
                                     <div class="tick">
-                                    <div class="tick-item tick-quality"><?= htmlspecialchars($animeData['quality'] ?: 'HD') ?></div>
-                                    <div class="tick-item tick-sub">CC <?= htmlspecialchars($animeData['subEp'] ?? '') ?></div>
-                                    <div class="tick-item tick-dub">DUB <?= htmlspecialchars($animeData['dubEp'] ?? '') ?></div>
+                                    <div class="quality-badge-wrap">
+                                        <div class="quality-badge" role="group" aria-label="Video quality and availability">
+                                            <span class="quality-badge-segment quality-badge-segment--hd"><?= htmlspecialchars($animeData['quality'] ?: 'HD') ?></span>
+                                            <span class="quality-badge-segment quality-badge-segment--cc">CC <?= htmlspecialchars($animeData['subEp'] ?? '13') ?></span>
+                                            <span class="quality-badge-segment quality-badge-segment--dub">DUB <?= htmlspecialchars($animeData['dubEp'] ?? '0') ?></span>
+                                        </div>
+                                    </div>
                                         <span class="dot"></span>
                                         <span class="item"><?= htmlspecialchars($animeData['showType']) ?></span>
                                         <span class="dot"></span>
