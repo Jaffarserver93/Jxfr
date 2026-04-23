@@ -41,6 +41,11 @@ if (!$animeData) {
     exit;
 }
 
+$malId = !empty($animeData['malId']) ? (string) $animeData['malId'] : null;
+$anilistId = !empty($animeData['anilistId']) ? (string) $animeData['anilistId'] : null;
+$aniwatchId = !empty($animeData['aniwatchId']) ? (string) $animeData['aniwatchId'] : ((string) ($animeData['id'] ?? ''));
+$initialEpisode = isset($_GET['ep']) ? (int) $_GET['ep'] : 1;
+
 $parts = parse_url($_SERVER['REQUEST_URI']);
 $page_url = explode('/', $parts['path']);
 $url = end($page_url);
@@ -203,6 +208,45 @@ $totalVotes = $like_count + $dislike_count;
                 min-height: 200px;
             }
         }
+
+        .player-language-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn-language-toggle {
+            border: 1px solid #444;
+            border-radius: 999px;
+            padding: 6px 14px;
+            background: #1f1f1f;
+            color: #d4d4d4;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+        .btn-language-toggle.active {
+            background: #ffd54f;
+            border-color: #ffd54f;
+            color: #111;
+        }
+
+        .player-frame {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #iframe-embed {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 
@@ -234,6 +278,10 @@ $totalVotes = $like_count + $dislike_count;
                             </div>
                             <div class="anis-watch anis-watch-tv">
                                 <div class="watch-player">
+                                    <div class="player-language-toggle" role="group" aria-label="Select language">
+                                        <button type="button" class="btn-language-toggle active" data-language="sub">Sub</button>
+                                        <button type="button" class="btn-language-toggle" data-language="dub">Dub</button>
+                                    </div>
                                     <div class="player-frame">
                                         <div class="loading-relative loading-box" id="embed-loading">
                                             <div class="loading">
@@ -905,12 +953,13 @@ $totalVotes = $like_count + $dislike_count;
         <script>
             $(document).ready(function () {
                 const $iframe = $("#iframe-embed");
-                let currentServerType = localStorage.getItem('preferredServerType') || 'dub';
-                let currentServerName = localStorage.getItem('preferredServerName') || '';
-                let currentEpisodeId = '<?= htmlspecialchars($streaming) ?>';
+                const $languageButtons = $(".btn-language-toggle");
+                const malId = <?= json_encode($malId) ?>;
+                const anilistId = <?= json_encode($anilistId) ?>;
+                const aniwatchId = <?= json_encode($aniwatchId) ?>;
+                let currentLanguage = localStorage.getItem('preferredLanguage') || 'sub';
                 let animeId = '<?= htmlspecialchars($animeData['id']) ?>';
                 let autoNextEnabled = true;
-                let autoSkipEnabled = true;
 
 
                 function toggleAutoNext() {
@@ -919,8 +968,7 @@ $totalVotes = $like_count + $dislike_count;
 
                 }
                 function toggleAutoSkip() {
-                    autoSkipEnabled = !autoSkipEnabled;
-                    $(".pc-autoskip .tb-result").text(autoSkipEnabled ? "" : "");
+                    $(".pc-autoskip .tb-result").text("");
                 }
 
                 $(".pc-autonext").on("click", toggleAutoNext);
@@ -974,139 +1022,53 @@ $totalVotes = $like_count + $dislike_count;
                     }
                 }
 
-                async function fetchServers(episodeId) {
-                    try {
-                        const response = await fetch(`/src/ajax/server.php?episodeId=${episodeId}`);
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return await response.json();
-                    } catch (error) {
-                        console.error('Error fetching servers:', error);
-                        return null;
-                    }
+                function setActiveLanguageButton() {
+                    $languageButtons.removeClass('active');
+                    $languageButtons.filter(`[data-language="${currentLanguage}"]`).addClass('active');
                 }
 
+                function buildMegaplayUrl(episodeNumber) {
+                    const safeEpisode = Number.isFinite(Number(episodeNumber)) && Number(episodeNumber) > 0
+                        ? Number(episodeNumber)
+                        : <?= json_encode($initialEpisode) ?>;
 
-                async function updateServerList(episodeId) {
-                    const servers = await fetchServers(episodeId);
-                    if (!servers) return;
-                    const $subList = $('.ps_-block-sub .ps__-list');
-                    const $dubList = $('.ps_-block-dub .ps__-list');
-                    currentServerType = localStorage.getItem('preferredServerType') || 'dub';
-                    currentServerName = localStorage.getItem('preferredServerName') || '';
-                    const preferredServerId = localStorage.getItem('preferredServerId');
-                    const preferredServerType = localStorage.getItem('preferredServerType');
-                    let preferredServerFound = false;
-
-                    if (servers.sub?.length) {
-                        $subList.html(servers.sub.map((server, index) => {
-                            const isActive = preferredServerId === server.serverId && preferredServerType === 'sub';
-                            if (isActive) preferredServerFound = true;
-                            const fastIcon = server.serverName.toLowerCase() === 'fast' ? '<i class="fa-solid fa-circle-radiation"></i>' : '';
-                            return `
-                    <div class="item">
-                        <button class="btn btn-server ${isActive ? 'active' : ''}" 
-                            data-episode-id="${episodeId}"
-                            data-server-id="${server.serverId}"
-                            data-server-type="sub"
-                            data-server-name="${server.serverName}">
-                            ${server.serverName} ${fastIcon}
-                        </button>
-                    </div>
-                `;
-                        }).join(''));
-                    } else {
-                        $subList.html('<div class="item">Please select an episode</div>');
+                    if (malId) {
+                        return `https://megaplay.buzz/stream/mal/${encodeURIComponent(malId)}/${safeEpisode}/${currentLanguage}`;
                     }
 
-                    if (servers.dub?.length) {
-                        $dubList.html(servers.dub.map((server, index) => {
-                            const isActive = preferredServerId === server.serverId && preferredServerType === 'dub';
-                            if (isActive) preferredServerFound = true;
-                            const fastIcon = server.serverName.toLowerCase() === 'fast' ? '<i class="fa-solid fa-circle-radiation"></i>' : '';
-                            return `
-                    <div class="item">
-                        <button class="btn btn-server ${isActive ? 'active' : ''}"
-                            data-episode-id="${episodeId}"
-                            data-server-id="${server.serverId}"
-                            data-server-type="dub"
-                            data-server-name="${server.serverName}">
-                            ${server.serverName} ${fastIcon}
-                        </button>
-                    </div>
-                `;
-                        }).join(''));
-                    } else {
-                        $dubList.html('<div class="item">No DUB servers available</div>');
+                    if (anilistId) {
+                        return `https://megaplay.buzz/stream/ani/${encodeURIComponent(anilistId)}/${safeEpisode}/${currentLanguage}`;
                     }
-                    attachServerListeners();
+
+                    if (aniwatchId) {
+                        return `https://megaplay.buzz/stream/s-2/${encodeURIComponent(aniwatchId)}/${currentLanguage}`;
+                    }
+
+                    return '';
+                }
+
+                function updateMegaplaySource(episodeNumber) {
+                    const playerUrl = buildMegaplayUrl(episodeNumber);
+                    if (!playerUrl) {
+                        console.warn('No MAL, AniList, or Aniwatch ID found for this title.');
+                        return;
+                    }
+
+                    $('#embed-loading').hide();
                     $('#servers-loading').hide();
-                        $('#servers-mixed').show();
-
-                    // Try to select preferred server
-                    let foundPreferred = $(`.btn-server[data-server-type="${currentServerType}"][data-server-name="${currentServerName}"]`);
-                    if (foundPreferred.length) {
-                        foundPreferred.first().click();
-                        console.log(`Preferred server found and selected: type=${currentServerType}, name=${currentServerName}`);
-                    } else {
-
-                        if (!preferredServerFound || !$('.btn-server.active').length) {
-                            const $firstServer = $('.btn-server').first();
-                            if ($firstServer.length) {
-                                $firstServer.addClass('active');
-                                localStorage.setItem('preferredServerId', $firstServer.data('server-id'));
-                                localStorage.setItem('preferredServerType', $firstServer.data('server-type'));
-                                localStorage.setItem('preferredServerName', $firstServer.data('server-name'));
-                            }
-                        }
-
-                        const $activeServer = $('.btn-server.active').first();
-                        if ($activeServer.length) {
-                            setTimeout(() => $activeServer.click(), 100);
-                        }
-
-                        attachServerListeners();
-                        
-                    }
+                    $('#servers-mixed').hide();
+                    $iframe.attr('src', playerUrl);
                 }
 
-                function attachServerListeners() {
-                    $(".btn-server").off("click").on("click", function () {
-                        $(".btn-server").removeClass('active');
-                        $(this).addClass('active');
+                $languageButtons.on('click', function () {
+                    currentLanguage = $(this).data('language');
+                    localStorage.setItem('preferredLanguage', currentLanguage);
+                    setActiveLanguageButton();
+                    const currentEpisodeNumber = $(".ssl-item.active").data('number') || new URLSearchParams(window.location.search).get('ep') || <?= json_encode($initialEpisode) ?>;
+                    updateMegaplaySource(currentEpisodeNumber);
+                });
 
-                        const serverId = $(this).data("server-id");
-                        const serverType = $(this).data("server-type");
-                        const serverName = $(this).data("server-name");
-                        const episodeId = $(this).data("episode-id");
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const episodeNumber = urlParams.get('ep');
-
-                        currentServerType = serverType;
-                        currentServerName = serverName;
-                        localStorage.setItem('preferredServerId', serverId);
-                        localStorage.setItem('preferredServerType', serverType);
-                        localStorage.setItem('preferredServerName', serverName);
-
-                        const skipParam = autoSkipEnabled ? "&skip=true" : "&skip=false";
-                        const encodedId = encodeURIComponent(currentEpisodeId); // ✅ properly encode the ID
-                        const playerUrl = `<?= $websiteUrl ?>/src/player/${currentServerType}.php?id=${encodedId}&server=${currentServerName}&embed=true&ep=${episodeNumber}${skipParam}`;
-
-                        console.log('Setting player URL:', playerUrl);
-                        setTimeout(() => $iframe.attr('src', playerUrl), 100);
-
-                        updateWatchHistory({
-                            episodeNumber: parseInt(episodeNumber)
-                        });
-
-                        $(".pc-autoskip").off("click").on("click", function () {
-                            const reloadUrl = `<?= $websiteUrl ?>/src/player/${currentServerType}.php?id=${encodedId}&server=${currentServerName}&embed=true&ep=${episodeNumber}${skipParam}`;
-                            console.log('Reloading player URL:', reloadUrl);
-                            $iframe.attr('src', reloadUrl);
-                        });
-                    });
-                }
-
-                updateServerList(currentEpisodeId);
+                setActiveLanguageButton();
 
                 function selectEpisode(episodeNumber) {
                     console.log('Selecting episode:', episodeNumber);
@@ -1133,9 +1095,7 @@ $totalVotes = $like_count + $dislike_count;
                 const $episodeItems = $(".ssl-item");
                 $episodeItems.each(function () {
                     $(this).on("click", async function () {
-                        const episodeId = $(this).attr("data-id");
                         const episodeNumber = $(this).attr("data-number");
-                        currentEpisodeId = episodeId;
 
                         $episodeItems.removeClass("active");
                         $(this).addClass("active");
@@ -1151,8 +1111,7 @@ $totalVotes = $like_count + $dislike_count;
                         await updateWatchHistory({
                             episodeNumber: parseInt(episodeNumber)
                         });
-
-                        await updateServerList(episodeId);
+                        updateMegaplaySource(episodeNumber);
 
                         updateNavigationButtons();
                     });
