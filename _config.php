@@ -4,7 +4,7 @@
 // when credentials are missing or the host is unreachable. PHP 8.1+ makes
 // mysqli throw exceptions by default; suppress that for the constructor.
 mysqli_report(MYSQLI_REPORT_OFF);
-$conn = @new mysqli("HOSTNAME", "USERNAME", "PASSWORD", "DATABASE"); //just like $conn = new mysqli("localhost", "root", "", "anipaca");
+$conn = new mysqli("sql113.infinityfree.com", "if0_41711685", "ThI3nYB2Kpqr", "if0_41711685_jxfr");
 
 if (!$conn || $conn->connect_error) {
     error_log("Database connection failed: " . ($conn ? $conn->connect_error : 'no connection object'));
