@@ -136,7 +136,9 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             overflow: hidden;
             color: #FFFFFF;
             font-family: "Inter", "Segoe UI", Arial, sans-serif;
-            line-height: 1;
+            height: 32px;
+            max-height: 34px;
+            line-height: normal;
         }
 
         .meta-badges {
@@ -149,9 +151,11 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
         .meta-badge {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-            padding: 10px 18px;
-            font-size: 18px;
+            height: 100%;
+            padding: 0 12px;
+            font-size: 14px;
             font-weight: 700;
             color: #121928;
             white-space: nowrap;
@@ -159,7 +163,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
 
         .meta-badge--pink {
             background: #FF7BAC;
-            min-width: 120px;
+            min-width: 72px;
             justify-content: center;
         }
 
@@ -174,8 +178,8 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
         }
 
         .meta-icon {
-            width: 28px;
-            height: 28px;
+            width: 16px;
+            height: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -193,17 +197,18 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             display: inline-flex;
             align-items: center;
             gap: 14px;
-            padding: 0 26px;
-            min-height: 48px;
-            font-size: 22px;
+            height: 100%;
+            padding: 0 12px;
+            font-size: 12px;
             font-weight: 500;
             white-space: nowrap;
+            line-height: normal;
         }
 
         .meta-details__dot {
             color: #8D93A1;
-            font-size: 28px;
-            line-height: 0.8;
+            font-size: 12px;
+            line-height: normal;
         }
     </style>
 </head>
