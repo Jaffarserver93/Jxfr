@@ -18,6 +18,10 @@ if (!$animeData) {
     exit;
 }
 
+$dubEpisodes = $animeData['dubEp'] ?? null;
+$dubDisplay = (is_numeric($dubEpisodes) && (int)$dubEpisodes > 0)
+    ? (string)(int)$dubEpisodes
+    : 'N/A';
 
 $isLoggedIn = isset($_COOKIE['userID']) && !empty($_COOKIE['userID']);
 $watchlistStatus = null;
@@ -142,29 +146,29 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
         }
 
         .meta-badges {
-            display: flex;
+            display: inline-flex;
             gap: 0;
             overflow: hidden;
             border-radius: 8px;
+            flex-shrink: 0;
         }
 
         .meta-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 4px;
             height: 100%;
-            padding: 0 12px;
-            font-size: 14px;
+            padding: 0 8px;
+            font-size: 12px;
             font-weight: 700;
             color: #121928;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .meta-badge--pink {
             background: #FF7BAC;
-            min-width: 72px;
-            justify-content: center;
         }
 
         .meta-badge--green {
@@ -175,6 +179,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             background: #72C7FF;
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
+            flex-shrink: 0;
         }
 
         .meta-icon {
@@ -196,7 +201,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
         .meta-details {
             display: inline-flex;
             align-items: center;
-            gap: 14px;
+            gap: 0;
             height: 100%;
             padding: 0 12px;
             font-size: 12px;
@@ -209,6 +214,25 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
             color: #8D93A1;
             font-size: 12px;
             line-height: normal;
+            margin: 0 5px;
+        }
+
+        @media (max-width: 576px) {
+            .meta-badge {
+                font-size: 11px;
+                padding: 0 8px;
+                gap: 4px;
+            }
+
+            .meta-icon {
+                width: 14px;
+                height: 14px;
+            }
+
+            .meta-details {
+                font-size: 11px;
+                padding: 0 10px;
+            }
         }
     </style>
 </head>
@@ -265,7 +289,7 @@ $characterDataJson = json_encode($characterData, JSON_UNESCAPED_UNICODE | JSON_U
                                                             <path d="M18.1 11.8a1 1 0 0 0-1 1 5.1 5.1 0 1 1-10.2 0 1 1 0 1 0-2 0 7.1 7.1 0 0 0 6.1 7v1.6H8.6a1 1 0 1 0 0 2h6.8a1 1 0 1 0 0-2H13v-1.6a7.1 7.1 0 0 0 6.1-7 1 1 0 0 0-1-1z"></path>
                                                         </svg>
                                                     </span>
-                                                    <span><?= htmlspecialchars($animeData['dubEp'] ?? '0') ?></span>
+                                                    <span><?= htmlspecialchars($dubDisplay) ?></span>
                                                 </div>
                                             </div>
                                             <div class="meta-details">
