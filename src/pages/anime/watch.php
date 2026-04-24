@@ -927,11 +927,37 @@ $totalVotes = $like_count + $dislike_count;
                 $(".pc-autoskip").on("click", toggleAutoSkip);
 
                 $iframe.on('load', function () {
-                    const videoPlayer = $iframe[0].contentWindow.document.querySelector('video');
-                    if (videoPlayer) {
-                        $(videoPlayer).on('ended', function () {
-                            if (autoNextEnabled) nextEpisode();
-                        });
+                    // Same-origin players can be monitored directly.
+                    // Cross-origin embeds (MegaPlay) use postMessage relays handled below.
+                    try {
+                        const videoPlayer = $iframe[0].contentWindow.document.querySelector('video');
+                        if (videoPlayer) {
+                            $(videoPlayer).off('ended').on('ended', function () {
+                                if (autoNextEnabled) nextEpisode();
+                            });
+                        }
+                    } catch (error) {
+                        // Expected for cross-origin iframes.
+                    }
+                });
+
+                window.addEventListener('message', function (event) {
+                    if (event.origin !== window.location.origin) return;
+                    const payload = event.data || {};
+                    if (payload.source !== 'megaplay' || !payload.data) return;
+
+                    const mp = payload.data;
+                    const eventName = mp.event || mp.type || mp.name || null;
+                    if (!eventName) return;
+
+                    $(document).trigger(`megaplay:${eventName}`, [mp]);
+
+                    if (eventName === 'complete' || eventName === 'ended') {
+                        if (autoNextEnabled) nextEpisode();
+                    }
+
+                    if (eventName === 'error') {
+                        console.error('MegaPlay player error:', mp);
                     }
                 });
 
