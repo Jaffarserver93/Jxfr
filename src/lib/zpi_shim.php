@@ -18,8 +18,8 @@
  *   ""                       (root composite for home.php)
  *
  * The shim is read-only and side-effect free besides a JSON file cache in
- * cache/jikan/. Streaming endpoints are NOT handled here — the player still
- * uses the original $zpi for /servers/* and /stream.
+ * cache/jikan/. Streaming endpoints are NOT handled here; streaming is
+ * handled separately by MegaPlay embeds in src/player/*.php.
  */
 
 if (!defined('JIKAN_BASE')) {

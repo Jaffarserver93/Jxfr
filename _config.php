@@ -26,7 +26,7 @@ $instagram = "https://www.instagram.com/pxr15_";
 // all the api you need
 $zpi = "https://your-hosted-api.com/api"; //https://github.com/PacaHat/zen-api
 // Metadata endpoints are served by the local Jikan shim (loaded below).
-// Player/streaming endpoints (/servers, /stream) still hit $zpi above.
+// Streaming now uses MegaPlay embeds in src/player/*.php and no longer uses $zpi.
 // $metaApi is a same-origin URL used by browser-side JS fetches that
 // previously hit $zpi for metadata (search, schedule, filter, etc.).
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/lib/zpi_shim.php');
