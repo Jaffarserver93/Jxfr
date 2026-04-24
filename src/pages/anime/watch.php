@@ -909,6 +909,7 @@ $totalVotes = $like_count + $dislike_count;
                 let currentServerName = localStorage.getItem('preferredServerName') || '';
                 let currentEpisodeId = '<?= htmlspecialchars($streaming) ?>';
                 let animeId = '<?= htmlspecialchars($animeData['id']) ?>';
+                const streamAniId = '<?= htmlspecialchars($animeData['anilistId'] ?? $animeData['id']) ?>';
                 let autoNextEnabled = true;
                 let autoSkipEnabled = true;
 
@@ -1115,7 +1116,7 @@ $totalVotes = $like_count + $dislike_count;
 
                         const skipParam = autoSkipEnabled ? "&skip=true" : "&skip=false";
                         const encodedId = encodeURIComponent(currentEpisodeId); // ✅ properly encode the ID
-                        const playerUrl = `<?= $websiteUrl ?>/src/player/${currentServerType}.php?id=${encodedId}&server=${currentServerName}&embed=true&ep=${episodeNumber}${skipParam}`;
+                        const playerUrl = `<?= $websiteUrl ?>/src/player/${currentServerType}.php?id=${encodedId}&anilist=${encodeURIComponent(streamAniId)}&server=${currentServerName}&embed=true&ep=${episodeNumber}${skipParam}`;
 
                         console.log('Setting player URL:', playerUrl);
                         setTimeout(() => $iframe.attr('src', playerUrl), 100);
@@ -1125,7 +1126,7 @@ $totalVotes = $like_count + $dislike_count;
                         });
 
                         $(".pc-autoskip").off("click").on("click", function () {
-                            const reloadUrl = `<?= $websiteUrl ?>/src/player/${currentServerType}.php?id=${encodedId}&server=${currentServerName}&embed=true&ep=${episodeNumber}${skipParam}`;
+                            const reloadUrl = `<?= $websiteUrl ?>/src/player/${currentServerType}.php?id=${encodedId}&anilist=${encodeURIComponent(streamAniId)}&server=${currentServerName}&embed=true&ep=${episodeNumber}${skipParam}`;
                             console.log('Reloading player URL:', reloadUrl);
                             $iframe.attr('src', reloadUrl);
                         });

@@ -9,13 +9,14 @@ $parsed = explode('?', urldecode($rawId));
 $animeId = $parsed[0] ?? '';
 parse_str($parsed[1] ?? '', $extraParams);
 $epNum = $extraParams['ep'] ?? ($_GET['ep'] ?? null);
+$anilistId = $_GET['anilist'] ?? ($_GET['aniId'] ?? $animeId);
 
-function buildMegaplayUrl($animeId, $epNum, $lang) {
-    $animeId = trim((string)$animeId);
+function buildMegaplayUrl($anilistId, $epNum, $lang) {
+    $anilistId = trim((string)$anilistId);
     $epNum = trim((string)$epNum);
 
-    if (ctype_digit($animeId) && ctype_digit($epNum)) {
-        return "https://megaplay.buzz/stream/mal/{$animeId}/{$epNum}/{$lang}";
+    if (ctype_digit($anilistId) && ctype_digit($epNum)) {
+        return "https://megaplay.buzz/stream/ani/{$anilistId}/{$epNum}/{$lang}";
     }
 
     // Fallback for legacy episode IDs if present.
@@ -26,7 +27,7 @@ function buildMegaplayUrl($animeId, $epNum, $lang) {
     return '';
 }
 
-$embedUrl = buildMegaplayUrl($animeId, $epNum, 'sub');
+$embedUrl = buildMegaplayUrl($anilistId, $epNum, 'sub');
 
 if ($embedUrl === '') {
     http_response_code(400);
